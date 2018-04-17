@@ -5,4 +5,8 @@
     <string name="multi_player">Мультиплеер</string>
     <string name="rules">Правила</string>
     <string name="settings">Настройки</string>
+    <string name="main_menu">Главное меню</string>
+    <string name="ok">ОК</string>
+    <string name="number_of_players">Выберите количество игроков</string>
+    <string name="start">начать</string>
 </resources>
