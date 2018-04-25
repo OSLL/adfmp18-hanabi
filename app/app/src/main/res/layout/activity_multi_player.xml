@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ru.mit.spbau.hanabi.MultiPlayerActivity">
 
     <TabHost
+        android:id="@+id/multiplayer_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toTopOf="parent"
         tools:layout_editor_absoluteY="222dp">
 
         <LinearLayout
@@ -30,7 +27,7 @@
                 android:layout_height="match_parent">
 
                 <ListView
-                    android:id="@+id/wifi_server"
+                    android:id="@+id/wifi_p2p_tab"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -38,7 +35,7 @@
                 </ListView>
 
                 <ListView
-                    android:id="@+id/wifi_p2p"
+                    android:id="@+id/internet_tab"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -48,4 +45,4 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
