@@ -79,5 +79,9 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="number_of_players">Choose the number of players</string>
-    <string name="start">start</string>>
+    <string name="start">start</string>
+
+    <string name="title_activity_game">GameActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>>
 </resources>

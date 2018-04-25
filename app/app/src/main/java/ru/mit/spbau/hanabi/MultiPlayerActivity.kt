@@ -7,11 +7,12 @@ import android.content.IntentFilter
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TabHost
 import ru.mit.spbau.hanabi.network.wifip2p.WiFiDirectBroadcastReceiver
 
-class MultiPlayerActivity : ActivityWithMenu() {
+class MultiPlayerActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = "MultiPlayerActivity"
