@@ -12,8 +12,11 @@ import com.shockwave.pdfium.PdfDocument
 
 class RulesActivity : AppCompatActivity(), OnPageChangeListener, OnLoadCompleteListener {
 
-    private val TAG = RulesActivity::class.java.simpleName
-    private val RULES_PDF = "hanabi.pdf"
+    companion object {
+        private val TAG = RulesActivity::class.java.simpleName
+        private val RULES_PDF = "hanabi.pdf"
+    }
+
     private var pdfView: PDFView? = null
     private var pageNumber = 0
     private var pdfFileName: String? = null

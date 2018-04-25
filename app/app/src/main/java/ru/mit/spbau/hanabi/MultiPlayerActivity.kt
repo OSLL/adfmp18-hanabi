@@ -14,9 +14,9 @@ import ru.mit.spbau.hanabi.network.wifip2p.WiFiDirectBroadcastReceiver
 class MultiPlayerActivity : ActivityWithMenu() {
 
     companion object {
-        val TAG = "MultiPlayerActivity"
-        val p2pTabTag = "wifi_p2p"
-        val internetTabTag = "internet"
+        private val TAG = "MultiPlayerActivity"
+        private val p2pTabTag = "wifi_p2p"
+        private val internetTabTag = "internet"
     }
 
     private var mManager: WifiP2pManager? = null

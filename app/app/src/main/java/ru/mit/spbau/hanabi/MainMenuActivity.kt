@@ -36,6 +36,4 @@ class MainMenuActivity : ActivityWithMenu() {
 
     }
 
-
-
 }
