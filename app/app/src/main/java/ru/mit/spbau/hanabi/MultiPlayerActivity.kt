@@ -6,10 +6,13 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.TabHost
+import android.view.View
+import android.view.ViewGroup
+import android.widget.*
 import ru.mit.spbau.hanabi.network.wifip2p.WiFiDirectBroadcastReceiver
 
 class MultiPlayerActivity : AppCompatActivity() {
@@ -25,6 +28,8 @@ class MultiPlayerActivity : AppCompatActivity() {
     private var mReceiver: BroadcastReceiver? = null
     private var mIntentFilter: IntentFilter? = null
     private var tabHost: TabHost? = null
+    private var mGamesList: ListView? = null
+    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     private val mP2PIntentFilter = IntentFilter()
 
@@ -74,12 +79,12 @@ class MultiPlayerActivity : AppCompatActivity() {
         tabHost!!.setOnTabChangedListener(this::tabChangedListener)
 
         var tabSpec = tabHost!!.newTabSpec(p2pTabTag)
-        tabSpec.setContent(R.id.wifi_p2p_tab)
+        tabSpec.setContent(R.id.wifi_p2p_game_list)
         tabSpec.setIndicator("Wifi p2p")
         tabHost!!.addTab(tabSpec)
 
         tabSpec = tabHost!!.newTabSpec(internetTabTag)
-        tabSpec.setContent(R.id.internet_tab)
+        tabSpec.setContent(R.id.internet_game_list)
         tabSpec.setIndicator("Internet")
         tabHost!!.addTab(tabSpec)
 
@@ -91,11 +96,18 @@ class MultiPlayerActivity : AppCompatActivity() {
             mCurTab = 0
             mIntentFilter = mP2PIntentFilter
             mReceiver = WiFiDirectBroadcastReceiver
+            mGamesList = findViewById(R.id.wifi_p2p_game_list)
+            mSwipeRefreshLayout = findViewById(R.id.swiperefresh_wifi_p2p)
+            mSwipeRefreshLayout?.setOnRefreshListener {
+                refreshGameList()
+                mSwipeRefreshLayout?.isRefreshing = false
+            }
             Log.d(TAG, "using P2P")
         }
 
         fun useInternet() {
             mCurTab = 1
+            mGamesList = findViewById(R.id.internet_game_list)
             Log.d(TAG, "using Internet")
         }
 
@@ -125,6 +137,59 @@ class MultiPlayerActivity : AppCompatActivity() {
     }
 
     private fun refreshGameList() {
+        Log.d(TAG, "refreshing game list")
+        val stubGameInfos = arrayOf(
+            GameInfo("Game #1", "info", false),
+            GameInfo("Game #2", "info", true),
+            GameInfo("Game #3", "info", false),
+            GameInfo("Game #4", "info", true),
+            GameInfo("Game #5", "info", true),
+            GameInfo("Game #6", "info", false),
+            GameInfo("Game #7", "info", false),
+            GameInfo("Game #8", "info", true),
+            GameInfo("Game #9", "info", false)
+        )
+
+        mGamesList?.adapter = GameListAdapter(stubGameInfos)
+    }
+
+    private data class GameInfo(val name: String, val description: String, val isLocked: Boolean)
+
+    private inner class GameListAdapter(private val gameInfoList: Array<GameInfo>):
+            ArrayAdapter<GameInfo>(this@MultiPlayerActivity, R.layout.game_list_item, gameInfoList) {
+
+        private val inflater = this@MultiPlayerActivity.layoutInflater
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val viewHolder: ViewHolder
+            val gameItem: View?
+
+            if (convertView == null) {
+                gameItem = inflater.inflate(R.layout.game_list_item, parent, false)
+
+                val gameNameTextView = gameItem.findViewById<TextView>(R.id.game_name)
+                val gameInfoTextView = gameItem.findViewById<TextView>(R.id.game_info)
+                val isGameLockedImageView = gameItem.findViewById<ImageView>(R.id.lock_image)
+                viewHolder = ViewHolder(gameNameTextView, gameInfoTextView, isGameLockedImageView)
+                gameItem.tag = viewHolder
+            } else {
+                viewHolder = convertView.tag as ViewHolder
+                gameItem = convertView
+            }
+
+            if (!gameInfoList[position].isLocked) {
+                viewHolder.isGameLockedImageView.visibility = View.GONE
+            }
+
+            viewHolder.gameNameTextView.text = gameInfoList[position].name
+            viewHolder.gameInfoTextView.text = gameInfoList[position].description
+
+            return gameItem!!
+        }
+
+        private inner class ViewHolder(val gameNameTextView: TextView,
+                                       val gameInfoTextView: TextView,
+                                       val isGameLockedImageView: ImageView)
 
     }
 
