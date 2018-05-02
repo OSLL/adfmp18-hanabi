@@ -26,28 +26,64 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/swiperefresh_wifi_p2p"
+                <RelativeLayout
+                    android:id="@+id/wifi_p2p_tab_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ListView
-                        android:id="@+id/wifi_p2p_game_list"
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/swiperefresh_wifi_p2p"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="5.0sp"
-                        android:orientation="vertical" />
+                        android:layout_height="wrap_content">
 
-                </android.support.v4.widget.SwipeRefreshLayout>
+                        <ListView
+                            android:id="@+id/wifi_p2p_game_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:divider="@android:color/transparent"
+                            android:dividerHeight="5.0sp"
+                            android:orientation="vertical" />
+                    </android.support.v4.widget.SwipeRefreshLayout>
 
-                    <ListView
-                        android:id="@+id/internet_game_list"
+                    <Button
+                        android:id="@+id/create_new_game_p2p_btn"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@android:color/transparent"
-                        android:dividerHeight="5.0sp"
-                        android:orientation="vertical" />
+                        android:layout_height="50dp"
+                        android:background="#faafa3"
+                        android:layout_alignParentBottom="true"
+                        android:text="@string/create_new_game"
+                        android:textAlignment="center"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/internet_tab_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/swiperefresh_internet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ListView
+                            android:id="@+id/internet_game_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:divider="@android:color/transparent"
+                            android:dividerHeight="5.0sp"
+                            android:orientation="vertical" />
+                    </android.support.v4.widget.SwipeRefreshLayout>
+
+                    <!-- I don't know how to reuse the button above, so just create a new one for now -->
+                    <Button
+                        android:id="@+id/create_new_game_internet_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="#faafa3"
+                        android:layout_alignParentBottom="true"
+                        android:text="@string/create_new_game"
+                        android:textAlignment="center"/>
+                </RelativeLayout>
 
             </FrameLayout>
         </LinearLayout>

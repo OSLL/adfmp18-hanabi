@@ -29,7 +29,6 @@ class MultiPlayerActivity : AppCompatActivity() {
     private var mIntentFilter: IntentFilter? = null
     private var tabHost: TabHost? = null
     private var mGamesList: ListView? = null
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null
 
     private val mP2PIntentFilter = IntentFilter()
 
@@ -39,6 +38,7 @@ class MultiPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_player)
         setupTabs()
+        setupRefreshLayouts()
         prepareP2PSettings()
         prepareInternetSettings()
     }
@@ -72,6 +72,20 @@ class MultiPlayerActivity : AppCompatActivity() {
         // TODO
     }
 
+    private fun setupRefreshLayouts() {
+        val swipeRefreshLayoutP2P = findViewById<SwipeRefreshLayout>(R.id.swiperefresh_wifi_p2p)
+        swipeRefreshLayoutP2P?.setOnRefreshListener {
+            refreshGameList()
+            swipeRefreshLayoutP2P.isRefreshing = false
+        }
+
+        val swipeRefreshLayoutInternet = findViewById<SwipeRefreshLayout>(R.id.swiperefresh_internet)
+        swipeRefreshLayoutInternet?.setOnRefreshListener {
+            refreshGameList()
+            swipeRefreshLayoutInternet.isRefreshing = false
+        }
+    }
+
     private fun setupTabs() {
         tabHost = findViewById<TabHost>(R.id.multiplayer_tabhost) as TabHost
 
@@ -79,12 +93,12 @@ class MultiPlayerActivity : AppCompatActivity() {
         tabHost!!.setOnTabChangedListener(this::tabChangedListener)
 
         var tabSpec = tabHost!!.newTabSpec(p2pTabTag)
-        tabSpec.setContent(R.id.wifi_p2p_game_list)
+        tabSpec.setContent(R.id.wifi_p2p_tab_content)
         tabSpec.setIndicator("Wifi p2p")
         tabHost!!.addTab(tabSpec)
 
         tabSpec = tabHost!!.newTabSpec(internetTabTag)
-        tabSpec.setContent(R.id.internet_game_list)
+        tabSpec.setContent(R.id.internet_tab_content)
         tabSpec.setIndicator("Internet")
         tabHost!!.addTab(tabSpec)
 
@@ -97,11 +111,6 @@ class MultiPlayerActivity : AppCompatActivity() {
             mIntentFilter = mP2PIntentFilter
             mReceiver = WiFiDirectBroadcastReceiver
             mGamesList = findViewById(R.id.wifi_p2p_game_list)
-            mSwipeRefreshLayout = findViewById(R.id.swiperefresh_wifi_p2p)
-            mSwipeRefreshLayout?.setOnRefreshListener {
-                refreshGameList()
-                mSwipeRefreshLayout?.isRefreshing = false
-            }
             Log.d(TAG, "using P2P")
         }
 
