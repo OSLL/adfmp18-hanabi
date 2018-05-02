@@ -1,7 +1,9 @@
 package ru.mit.spbau.hanabi
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Button
 import android.widget.NumberPicker
 
 class SinglePlayerActivity : AppCompatActivity() {
@@ -23,11 +25,11 @@ class SinglePlayerActivity : AppCompatActivity() {
     }
 
     private fun setupStartButton() {
-//        val startButton = findViewById<Button>(R.id.start_button)
-//        startButton?.setOnClickListener { _ ->
-//            val intent = Intent(this, GameActivity::class.java)
-//            this.startActivity(intent)
-//        }
+        val startButton = findViewById<Button>(R.id.start_button)
+        startButton?.setOnClickListener { _ ->
+            val intent = Intent(this, GameActivity::class.java)
+            this.startActivity(intent)
+        }
     }
 
 }

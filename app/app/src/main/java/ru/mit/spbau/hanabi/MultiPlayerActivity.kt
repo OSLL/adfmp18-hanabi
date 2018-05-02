@@ -87,7 +87,7 @@ class MultiPlayerActivity : AppCompatActivity() {
     }
 
     private fun setupTabs() {
-        tabHost = findViewById<TabHost>(R.id.multiplayer_tabhost) as TabHost
+        tabHost = findViewById(R.id.multiplayer_tabhost)
 
         tabHost!!.setup()
         tabHost!!.setOnTabChangedListener(this::tabChangedListener)
