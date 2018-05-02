@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_gravity="center"
+    android:layout_width="70dp"
+    android:layout_height="100dp"
+    card_view:cardCornerRadius="5dp"
+    style="@style/MyCardViewStyle">
+
+    <!--
+        specify color and text in this TextView in order to make a card
+        see res/values/colors.xml
+    -->
+    <TextView
+        android:id="@+id/card_value_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="72sp" />
+
+</android.support.v7.widget.CardView>

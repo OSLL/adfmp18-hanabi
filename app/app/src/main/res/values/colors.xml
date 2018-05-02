@@ -5,4 +5,10 @@
     <color name="colorAccent">#FF4081</color>
     <color name="lightRed">#faafa3</color>
     <color name="lightGreen">#9cec9c</color>
+    <color name="cardCoverColour">#3D2362</color>
+    <color name="cardWhite">#ffffff</color>
+    <color name="cardYellow">#E7EC2E</color>
+    <color name="cardBlue">#0193FF</color>
+    <color name="cardGreen">#00B458</color>
+    <color name="cardRed">#CC0017</color>
 </resources>
