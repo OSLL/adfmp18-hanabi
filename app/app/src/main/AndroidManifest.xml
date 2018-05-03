@@ -46,6 +46,7 @@
             android:name=".GameActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
+        <activity android:name=".CreateGameActivity"></activity>
     </application>
 
 </manifest>

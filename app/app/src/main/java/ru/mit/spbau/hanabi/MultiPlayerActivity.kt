@@ -18,9 +18,9 @@ import ru.mit.spbau.hanabi.network.wifip2p.WiFiDirectBroadcastReceiver
 class MultiPlayerActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "MultiPlayerActivity"
-        private val p2pTabTag = "wifi_p2p"
-        private val internetTabTag = "internet"
+        private const val TAG = "MultiPlayerActivity"
+        private const val p2pTabTag = "wifi_p2p"
+        private const val internetTabTag = "internet"
     }
 
     private var mManager: WifiP2pManager? = null
@@ -31,7 +31,6 @@ class MultiPlayerActivity : AppCompatActivity() {
     private var mGamesList: ListView? = null
 
     private val mP2PIntentFilter = IntentFilter()
-
     private var mCurTab = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +45,7 @@ class MultiPlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "resuming MultiPlayerActivity")
+        tabHost?.currentTab = mCurTab
         registerReceiver(mReceiver, mIntentFilter)
     }
 
