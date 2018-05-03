@@ -1,16 +1,21 @@
 package ru.mit.spbau.hanabi.game
 
+import ru.mit.spbau.hanabi.GameActivity
+import java.lang.Thread.sleep
 import java.util.*
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.BlockingQueue
 
 interface Player {
     fun makeMove(gameState: GameState): Move
-    fun sendMoveNotification(/*info: PlayerInfo, */ move: Move)
+    fun sendMoveNotification(/*info: PlayerInfo, */ gameState: GameState)
     fun notifyMyMove(move: Move)
     fun gameEnd(gameState: GameState)
 }
 
 class StupidAIPlayer : Player {
     override fun makeMove(gameState: GameState): Move {
+        sleep(500)
         val cards = gameState.playersHands[gameState.currentPlayer].cards
         for (cardId in 0 until cards.size) {
             val card = cards[cardId]
@@ -41,7 +46,7 @@ class StupidAIPlayer : Player {
         return FoldMove(0)
     }
 
-    override fun sendMoveNotification(move: Move) {
+    override fun sendMoveNotification(gameState: GameState) {
 
     }
 
@@ -57,6 +62,34 @@ class StupidAIPlayer : Player {
             println("Score = " + gameState.getScore())
         }
     }
+}
+
+class UIPlayer(private val gameView: GameActivity) : Player {
+    private val queue: BlockingQueue<Move> = ArrayBlockingQueue<Move>(1)
+
+    override fun makeMove(gameState: GameState): Move {
+        sleep(500)
+        return FoldMove(0)
+
+//        while (queue.isEmpty()) {
+//        }
+//        return queue.poll()
+    }
+
+    override fun sendMoveNotification(gameState: GameState) {
+        gameView.runOnUiThread {
+            gameView.redraw(gameState)
+        }
+    }
+
+    override fun notifyMyMove(move: Move) {
+        queue.put(move)
+    }
+
+    override fun gameEnd(gameState: GameState) {
+
+    }
+
 }
 
 class ConsolePlayer : Player {
@@ -88,7 +121,7 @@ class ConsolePlayer : Player {
         }
     }
 
-    override fun sendMoveNotification(move: Move) {
+    override fun sendMoveNotification(gameState: GameState) {
 
     }
 

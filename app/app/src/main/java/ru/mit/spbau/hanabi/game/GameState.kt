@@ -27,6 +27,10 @@ class GameState(val playersCnt: Int) {
         return cntHints
     }
 
+    fun getCntLife(): Int {
+        return cntLife
+    }
+
     fun getState(): State {
         return state
     }

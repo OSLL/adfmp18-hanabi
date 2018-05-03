@@ -1,5 +1,9 @@
 package ru.mit.spbau.hanabi.game
 
+interface GameView {
+    fun redraw(gameState: GameState)
+}
+
 class Game(private val players: List<Player>) {
     fun run() {
         val gameState = GameState(players.size)
@@ -8,10 +12,10 @@ class Game(private val players: List<Player>) {
             val move = players[gameState.currentPlayer].makeMove(gameState)
             gameState.applyMove(move)
             for (player in players) {
-                player.sendMoveNotification(/*player.getInfo, */ move)
+                player.sendMoveNotification(gameState)
             }
 
-            gameState.printState()
+//            gameState.printState()
         }
         for (player in players) {
             player.gameEnd(gameState)
