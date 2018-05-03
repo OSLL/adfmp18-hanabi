@@ -9,9 +9,11 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TabHost
 import android.widget.TextView
+import ru.mit.spbau.hanabi.game.*
 
-class GameActivity : AppCompatActivity() {
 
+
+class GameActivity : AppCompatActivity(), GameView {
     companion object {
         private val solitaireTabTag = "solitaire"
         private val junkTabTag = "junk"
@@ -20,6 +22,9 @@ class GameActivity : AppCompatActivity() {
     private var tabHost: TabHost? = null
     private var mCurTab = 0
     private var mHandsView: ListView? = null
+    private var mLifeView: TextView? = null
+    private var mHintsView: TextView? = null
+    private var mUIPlayer: UIPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,18 @@ class GameActivity : AppCompatActivity() {
         setupTabs()
         setupGameInfoView()
         setupHandsView()
+
+        mUIPlayer = UIPlayer(this)
+        val gameThread = Thread(Runnable({
+            val game = Game(listOf(mUIPlayer!!, StupidAIPlayer(), StupidAIPlayer()))
+            game.run()
+        }))
+        gameThread.start()
+    }
+
+    override fun redraw(gameState: GameState) {
+        gameState.printState()
+        updateGameInfoView(gameState.getCntLife(), gameState.getCntHints())
     }
 
     private fun setupTabs() {
@@ -50,6 +67,16 @@ class GameActivity : AppCompatActivity() {
 
     private fun setupGameInfoView() {
         // TODO
+        mLifeView = findViewById(R.id.life_view)
+        mHintsView = findViewById(R.id.hints_view)
+
+        updateGameInfoView(3, 8)
+    }
+
+    private fun updateGameInfoView(lifeCnt: Int, hintsCnt: Int) {
+        mLifeView!!.setText("$lifeCnt life")
+        mHintsView!!.setText("$hintsCnt hints")
+
     }
 
     private fun setupHandsView() {
@@ -80,7 +107,7 @@ class GameActivity : AppCompatActivity() {
     private data class CardInfo(val value: Int, val color: Int)
     private data class HandInfo(val cards: Array<CardInfo>) // we don't need neither equals, nor hashcode
 
-    private inner class HandsListAdapter(private val handInfosList: Array<HandInfo>):
+    private inner class HandsListAdapter(private val handInfosList: Array<HandInfo>) :
             ArrayAdapter<HandInfo>(this@GameActivity, R.layout.player_hand_item_view, handInfosList) {
 
         private val inflater = this@GameActivity.layoutInflater

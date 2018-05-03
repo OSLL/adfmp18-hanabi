@@ -77,6 +77,24 @@
         android:layout_width="50dp"
         android:orientation="vertical"
         android:background="#0000ff">
+
+        <TextView
+            android:id="@+id/life_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="3 life"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hints_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="8 hints"
+            android:textSize="10sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
