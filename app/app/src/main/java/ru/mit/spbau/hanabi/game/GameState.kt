@@ -12,15 +12,20 @@ class GameState(val playersCnt: Int) {
     enum class State { IN_PROGRESS, LOOSE, WIN }
 
     private var state: State = State.IN_PROGRESS
-    val deck: MutableList<Card> = generateRandomDeck()
+    private val deck: MutableList<Card> = generateRandomDeck()
+    private val junk: MutableList<Card> = ArrayList()
+    private val movesHistory: MutableList<Move> = ArrayList()
     val solitaire: Solitaire = Solitaire()
-    val junk: MutableList<Card> = ArrayList()
     val playersHands: List<PlayerHand> = dealCards(deck, playersCnt)
-    val movesHistory: MutableList<Move> = ArrayList()
-    var cntHints: Int = MAX_CNT_HINTS
-    var cntLife: Int = MAX_CNT_LIFE
+
+    private var cntHints: Int = MAX_CNT_HINTS
+    private var cntLife: Int = MAX_CNT_LIFE
+    private var lastRoundMoves = playersCnt + 1
     var currentPlayer = 0
-    var lastRoundMoves = playersCnt + 1
+
+    fun getCntHints(): Int {
+        return cntHints
+    }
 
     fun getState(): State {
         return state
@@ -59,7 +64,7 @@ class GameState(val playersCnt: Int) {
                     }
                 } else {
                     if (card.value == 5) {
-                        cntHints = minOf(cntHints + 1, 8)
+                        cntHints = minOf(cntHints + 1, MAX_CNT_HINTS)
                     }
                 }
                 playersHands[currentPlayer].getCartFromDeck(deck)
@@ -68,7 +73,7 @@ class GameState(val playersCnt: Int) {
             is FoldMove -> {
                 playersHands[currentPlayer].foldCard(move.cardId, junk)
                 playersHands[currentPlayer].getCartFromDeck(deck)
-                cntHints = minOf(cntHints + 1, 8)
+                cntHints = minOf(cntHints + 1, MAX_CNT_HINTS)
             }
         }
 
@@ -87,12 +92,12 @@ class GameState(val playersCnt: Int) {
     }
 
     fun printState() {
-        System.out.println("Hints cnt = " + cntHints)
-        System.out.println("Life cnt = " + cntLife)
-        System.out.println("Current player = " + currentPlayer)
+        System.out.println("Hints cnt = $cntHints")
+        System.out.println("Life cnt = $cntLife")
+        System.out.println("Current player = $currentPlayer")
         System.out.println("Solitaire:")
         for (value in solitaire.maxValue) {
-            System.out.print("" + value + " ")
+            System.out.print("$value ")
         }
         System.out.println()
         if (!movesHistory.isEmpty()) {

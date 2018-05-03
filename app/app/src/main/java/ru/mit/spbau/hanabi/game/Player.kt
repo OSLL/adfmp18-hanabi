@@ -19,7 +19,7 @@ class StupidAIPlayer : Player {
             }
         }
 
-        if (gameState.cntHints == 0) {
+        if (gameState.getCntHints() == 0) {
             return FoldMove(0)
         }
 
