@@ -8,6 +8,7 @@
     android:baselineAligned="false"
     tools:context="ru.mit.spbau.hanabi.GameActivity">
 
+    <!-- TODO use constraint layout instead of percent -->
     <android.support.percent.PercentRelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -59,14 +60,14 @@
             </TabHost>
 
         </LinearLayout>
-        <TextView
+
+        <ListView
+            android:id="@+id/hands_view"
             android:layout_below="@id/game_table"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="#ffff5566"
-            android:text="50%"
-            app:layout_heightPercent="50%"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_heightPercent="50%" />
 
     </android.support.percent.PercentRelativeLayout>
 
