@@ -84,5 +84,8 @@
     <string name="title_activity_game">GameActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="create_new_game">Create new game</string>>
+    <string name="create_new_game">Create new game</string>
+    <string name="create">Create</string>
+    <string name="game_name">Game name</string>
+    <string name="password">Password</string>>
 </resources>

@@ -38,6 +38,7 @@ class MultiPlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_multi_player)
         setupTabs()
         setupRefreshLayouts()
+        setupCreateGameBtn()
         prepareP2PSettings()
         prepareInternetSettings()
     }
@@ -103,6 +104,20 @@ class MultiPlayerActivity : AppCompatActivity() {
         tabHost!!.addTab(tabSpec)
 
         tabHost!!.currentTab = mCurTab
+    }
+
+    private fun setupCreateGameBtn() {
+        var createGameBtn = findViewById<Button>(R.id.create_new_game_p2p_btn)
+        createGameBtn?.setOnClickListener { _ ->
+            val intent = Intent(this, CreateGameActivity::class.java)
+            this.startActivity(intent)
+        }
+
+        createGameBtn = findViewById<Button>(R.id.create_new_game_internet)
+        createGameBtn?.setOnClickListener { _ ->
+            val intent = Intent(this, CreateGameActivity::class.java)
+            this.startActivity(intent)
+        }
     }
 
     private fun tabChangedListener(tab: String) {
