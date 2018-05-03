@@ -15,7 +15,7 @@ interface Player {
 
 class StupidAIPlayer : Player {
     override fun makeMove(gameState: GameState): Move {
-        sleep(2000)
+        sleep(1000)
         val cards = gameState.playersHands[gameState.currentPlayer].cards
         for (cardId in 0 until cards.size) {
             val card = cards[cardId]
@@ -68,12 +68,12 @@ class UIPlayer(private val gameView: GameActivity) : Player {
     private val queue: BlockingQueue<Move> = ArrayBlockingQueue<Move>(1)
 
     override fun makeMove(gameState: GameState): Move {
-        sleep(2000)
-        return FoldMove(0)
+//        sleep(1000)
+//        return FoldMove(0)
 
-//        while (queue.isEmpty()) {
-//        }
-//        return queue.poll()
+        while (queue.isEmpty()) {
+        }
+        return queue.poll()
     }
 
     override fun sendMoveNotification(gameState: GameState) {

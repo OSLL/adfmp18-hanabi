@@ -5,12 +5,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TabHost
-import android.widget.TextView
+import android.widget.*
 import ru.mit.spbau.hanabi.game.*
-
 
 
 class GameActivity : AppCompatActivity(), GameView {
@@ -24,6 +20,8 @@ class GameActivity : AppCompatActivity(), GameView {
     private var mHandsView: ListView? = null
     private var mLifeView: TextView? = null
     private var mHintsView: TextView? = null
+    private var mSolitaireView: ListView? = null
+    private var mJunkView: ListView? = null
     private var mUIPlayer: UIPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +31,19 @@ class GameActivity : AppCompatActivity(), GameView {
         setupGameInfoView()
         setupHandsView()
 
+        setupGame()
+    }
+
+    private fun setupGame() {
         mUIPlayer = UIPlayer(this)
+        val players: MutableList<Player> = mutableListOf(mUIPlayer!!)
+        val playersCnt = 3
+        for (i in 2..playersCnt) {
+            players.add(StupidAIPlayer())
+        }
+
         val gameThread = Thread(Runnable({
-            val game = Game(listOf(mUIPlayer!!, StupidAIPlayer(), StupidAIPlayer()))
+            val game = Game(players)
             game.run()
         }))
         gameThread.start()
@@ -45,6 +53,23 @@ class GameActivity : AppCompatActivity(), GameView {
         gameState.printState()
         updateGameInfoView(gameState.getCntLife(), gameState.getCntHints())
         updateHandsView(gameState.playersHands)
+        updateSolitaire(gameState.solitaire)
+        updateJunk(gameState.junk)
+    }
+
+    private fun updateSolitaire(solitaire: Solitaire) {
+        val hand = PlayerHand()
+        for (color in 1..5) {
+            val card = Card(solitaire.maxValue[color - 1], color)
+            hand.cards.add(card)
+        }
+        val hands: List<PlayerHand> = listOf(hand)
+
+        mSolitaireView?.adapter = HandsListAdapter(hands, -1)
+    }
+
+    private fun updateJunk(junk: List<Card>) {
+
     }
 
     private fun setupTabs() {
@@ -64,6 +89,9 @@ class GameActivity : AppCompatActivity(), GameView {
         tabHost!!.addTab(tabSpec)
 
         tabHost!!.currentTab = mCurTab
+
+        mSolitaireView = findViewById(R.id.solitaire_tab_content)
+        mJunkView = findViewById(R.id.junk_tab_content)
     }
 
     private fun setupGameInfoView() {
@@ -75,26 +103,10 @@ class GameActivity : AppCompatActivity(), GameView {
     private fun updateGameInfoView(lifeCnt: Int, hintsCnt: Int) {
         mLifeView!!.setText("$lifeCnt life")
         mHintsView!!.setText("$hintsCnt hints")
-
     }
 
     private fun updateHandsView(playersHands: List<PlayerHand>) {
-        val firstHandStub = arrayOf(CardInfo(1, 4), CardInfo(2, 3),
-                CardInfo(3, 3), CardInfo(4, 4))
-        val secondHandStub = arrayOf(CardInfo(5, 5), CardInfo(1, 5),
-                CardInfo(2, 2), CardInfo(3, 3))
-        val thirdHandStub = arrayOf(CardInfo(3, 2), CardInfo(4, 4),
-                CardInfo(1, 1), CardInfo(2, 2))
-        val fourthHandStub = arrayOf(CardInfo(2, 2), CardInfo(5, 1),
-                CardInfo(4, 5), CardInfo(3, 1))
-        val stubHandsInfo = arrayOf(
-                HandInfo(firstHandStub),
-                HandInfo(secondHandStub),
-                HandInfo(thirdHandStub),
-                HandInfo(fourthHandStub)
-        )
-
-        mHandsView?.adapter = HandsListAdapter(playersHands)
+        mHandsView?.adapter = HandsListAdapter(playersHands, 0)
     }
 
     private fun setupHandsView() {
@@ -105,29 +117,21 @@ class GameActivity : AppCompatActivity(), GameView {
         // TODO
     }
 
-    private data class CardInfo(val value: Int, val color: Int)
-    private data class HandInfo(val cards: Array<CardInfo>) // we don't need neither equals, nor hashcode
-
-    private inner class HandsListAdapter(private val handInfosList: List<PlayerHand>) :
+    private inner class HandsListAdapter(private val handInfosList: List<PlayerHand>, val currentPlayer: Int) :
             ArrayAdapter<PlayerHand>(this@GameActivity, R.layout.player_hand_item_view, handInfosList) {
 
         private val inflater = this@GameActivity.layoutInflater
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            val handItem: View?
-
-            if (convertView == null) {
-                handItem = inflater.inflate(R.layout.player_hand_item_view, parent, false)
-            } else {
-                handItem = convertView
-            }
+            val handItem: View? = convertView
+                    ?: inflater.inflate(R.layout.player_hand_item_view, parent, false)
 
             // TODO performance, need view holder
             (handItem as ViewGroup).removeAllViews()
             for (card in handInfosList[position].cards) {
                 val cardView = inflater.inflate(R.layout.game_card, handItem, false) as ViewGroup
                 val cardTextView = cardView.getChildAt(0) as TextView
-                if (position != 0) {
+                if (position != currentPlayer) {
                     cardTextView.text = card.value.toString()
                     setColorCard(cardTextView, card.color)
                 } else {
