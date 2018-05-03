@@ -29,6 +29,7 @@ class MultiPlayerActivity : AppCompatActivity() {
     private var mIntentFilter: IntentFilter? = null
     private var tabHost: TabHost? = null
     private var mGamesList: ListView? = null
+    private var mCurrentGameList: Array<GameInfo>? = null
 
     private val mP2PIntentFilter = IntentFilter()
     private var mCurTab = 0
@@ -39,6 +40,7 @@ class MultiPlayerActivity : AppCompatActivity() {
         setupTabs()
         setupRefreshLayouts()
         setupCreateGameBtn()
+        setupListViews()
         prepareP2PSettings()
         prepareInternetSettings()
     }
@@ -104,6 +106,22 @@ class MultiPlayerActivity : AppCompatActivity() {
         tabHost!!.addTab(tabSpec)
 
         tabHost!!.currentTab = mCurTab
+    }
+
+    private fun setupListViews() {
+        mGamesList = findViewById(R.id.wifi_p2p_game_list)
+        mGamesList?.isClickable = true
+        mGamesList?.setOnItemClickListener { _, view: View , pos: Int, id: Long ->
+            val gameInfo = mCurrentGameList?.get(pos)
+            val builder = AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert)
+            builder.setTitle("Join " + gameInfo?.name)
+                    .setMessage("game description: " + gameInfo?.description)
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                    })
+                    .setNegativeButton(android.R.string.cancel, { _, _ ->
+                    })
+                    .show()
+        }
     }
 
     private fun setupCreateGameBtn() {
@@ -183,6 +201,10 @@ class MultiPlayerActivity : AppCompatActivity() {
             ArrayAdapter<GameInfo>(this@MultiPlayerActivity, R.layout.game_list_item, gameInfoList) {
 
         private val inflater = this@MultiPlayerActivity.layoutInflater
+
+        init {
+            this@MultiPlayerActivity.mCurrentGameList = gameInfoList
+        }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val viewHolder: ViewHolder
