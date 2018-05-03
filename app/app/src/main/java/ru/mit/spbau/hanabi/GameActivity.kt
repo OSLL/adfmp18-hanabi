@@ -44,6 +44,7 @@ class GameActivity : AppCompatActivity(), GameView {
     override fun redraw(gameState: GameState) {
         gameState.printState()
         updateGameInfoView(gameState.getCntLife(), gameState.getCntHints())
+        updateHandsView(gameState.playersHands)
     }
 
     private fun setupTabs() {
@@ -69,8 +70,6 @@ class GameActivity : AppCompatActivity(), GameView {
         // TODO
         mLifeView = findViewById(R.id.life_view)
         mHintsView = findViewById(R.id.hints_view)
-
-        updateGameInfoView(3, 8)
     }
 
     private fun updateGameInfoView(lifeCnt: Int, hintsCnt: Int) {
@@ -79,9 +78,7 @@ class GameActivity : AppCompatActivity(), GameView {
 
     }
 
-    private fun setupHandsView() {
-        mHandsView = findViewById(R.id.hands_view)
-
+    private fun updateHandsView(playersHands: List<PlayerHand>) {
         val firstHandStub = arrayOf(CardInfo(1, 4), CardInfo(2, 3),
                 CardInfo(3, 3), CardInfo(4, 4))
         val secondHandStub = arrayOf(CardInfo(5, 5), CardInfo(1, 5),
@@ -97,7 +94,11 @@ class GameActivity : AppCompatActivity(), GameView {
                 HandInfo(fourthHandStub)
         )
 
-        mHandsView?.adapter = HandsListAdapter(stubHandsInfo)
+        mHandsView?.adapter = HandsListAdapter(playersHands)
+    }
+
+    private fun setupHandsView() {
+        mHandsView = findViewById(R.id.hands_view)
     }
 
     private fun tabChangedListener(tab: String) {
@@ -107,8 +108,8 @@ class GameActivity : AppCompatActivity(), GameView {
     private data class CardInfo(val value: Int, val color: Int)
     private data class HandInfo(val cards: Array<CardInfo>) // we don't need neither equals, nor hashcode
 
-    private inner class HandsListAdapter(private val handInfosList: Array<HandInfo>) :
-            ArrayAdapter<HandInfo>(this@GameActivity, R.layout.player_hand_item_view, handInfosList) {
+    private inner class HandsListAdapter(private val handInfosList: List<PlayerHand>) :
+            ArrayAdapter<PlayerHand>(this@GameActivity, R.layout.player_hand_item_view, handInfosList) {
 
         private val inflater = this@GameActivity.layoutInflater
 
@@ -126,19 +127,37 @@ class GameActivity : AppCompatActivity(), GameView {
             for (card in handInfosList[position].cards) {
                 val cardView = inflater.inflate(R.layout.game_card, handItem, false) as ViewGroup
                 val cardTextView = cardView.getChildAt(0) as TextView
-                cardTextView.text = card.value.toString()
-                when (card.color) {
-                    0 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardWhite))
-                    1 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardYellow))
-                    2 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardBlue))
-                    3 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardGreen))
-                    4 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardRed))
+                if (position != 0) {
+                    cardTextView.text = card.value.toString()
+                    setColorCard(cardTextView, card.color)
+                } else {
+                    if (card.ownerKnowsVal) {
+                        cardTextView.text = card.value.toString()
+                    } else {
+                        cardTextView.text = "?"
+                    }
+                    if (card.ownerKnowsCol) {
+                        setColorCard(cardTextView, card.color)
+                    } else {
+                        cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardUnknown))
+                    }
                 }
                 (cardView.layoutParams as ViewGroup.MarginLayoutParams).marginEnd = 30
                 handItem.addView(cardView)
             }
 
             return handItem
+        }
+
+        fun setColorCard(cardTextView: TextView, color: Int) {
+            when (color) {
+                1 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardWhite))
+                2 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardYellow))
+                3 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardBlue))
+                4 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardGreen))
+                5 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardRed))
+                else -> throw GameException("Draw unknown card")
+            }
         }
 
     }

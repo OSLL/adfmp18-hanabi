@@ -11,4 +11,5 @@
     <color name="cardBlue">#0193FF</color>
     <color name="cardGreen">#00B458</color>
     <color name="cardRed">#CC0017</color>
+    <color name="cardUnknown">#000000</color>
 </resources>
