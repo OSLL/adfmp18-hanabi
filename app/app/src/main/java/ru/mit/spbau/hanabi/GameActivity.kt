@@ -2,11 +2,14 @@ package ru.mit.spbau.hanabi
 
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import ru.mit.spbau.hanabi.game.*
+import android.widget.Toast
+import android.content.DialogInterface
 
 
 class GameActivity : AppCompatActivity(), GameView {
@@ -128,12 +131,14 @@ class GameActivity : AppCompatActivity(), GameView {
 
             // TODO performance, need view holder
             (handItem as ViewGroup).removeAllViews()
-            for (card in handInfosList[position].cards) {
+            for (cardPos in 0 until handInfosList[position].cards.size) {
+                val card = handInfosList[position].cards[cardPos]
                 val cardView = inflater.inflate(R.layout.game_card, handItem, false) as ViewGroup
                 val cardTextView = cardView.getChildAt(0) as TextView
                 if (position != currentPlayer) {
                     cardTextView.text = card.value.toString()
                     setColorCard(cardTextView, card.color)
+                    setOnClickListnerToFriendCard(cardView, position, card)
                 } else {
                     if (card.ownerKnowsVal) {
                         cardTextView.text = card.value.toString()
@@ -145,12 +150,54 @@ class GameActivity : AppCompatActivity(), GameView {
                     } else {
                         cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardUnknown))
                     }
+
+                    setOnClickListnerToMyCard(cardView, cardPos)
                 }
                 (cardView.layoutParams as ViewGroup.MarginLayoutParams).marginEnd = 30
                 handItem.addView(cardView)
             }
 
             return handItem
+        }
+
+        fun setOnClickListnerToFriendCard(cardView: View, playerId: Int, card: Card) {
+            cardView.setOnClickListener {
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Move")
+                builder.setMessage("Choose move")
+                builder.setPositiveButton("hint color", object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.color))
+                    }
+                })
+                builder.setNegativeButton("hint value", object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.value))
+                    }
+                })
+                builder.setCancelable(true)
+                builder.create().show()
+            }
+        }
+
+        fun setOnClickListnerToMyCard(cardView: View, cardPos: Int) {
+            cardView.setOnClickListener {
+                val builder = AlertDialog.Builder(context)
+                builder.setTitle("Move")
+                builder.setMessage("Choose move")
+                builder.setPositiveButton("fold", object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        mUIPlayer!!.notifyMyMove(FoldMove(cardPos))
+                    }
+                })
+                builder.setNegativeButton("solitaire", object : DialogInterface.OnClickListener {
+                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                        mUIPlayer!!.notifyMyMove(SolitaireMove(cardPos))
+                    }
+                })
+                builder.setCancelable(true)
+                builder.create().show()
+            }
         }
 
         fun setColorCard(cardTextView: TextView, color: Int) {

@@ -83,7 +83,9 @@ class UIPlayer(private val gameView: GameActivity) : Player {
     }
 
     override fun notifyMyMove(move: Move) {
-        queue.put(move)
+        if (queue.isEmpty()) {
+            queue.put(move)
+        }
     }
 
     override fun gameEnd(gameState: GameState) {
