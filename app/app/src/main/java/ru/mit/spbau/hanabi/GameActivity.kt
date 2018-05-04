@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import ru.mit.spbau.hanabi.game.*
-import android.widget.Toast
-import android.content.DialogInterface
+import android.content.Intent
 
 
 class GameActivity : AppCompatActivity(), GameView {
     companion object {
-        private val solitaireTabTag = "solitaire"
-        private val junkTabTag = "junk"
+        private const val solitaireTabTag = "solitaire"
+        private const val junkTabTag = "junk"
     }
 
     private var tabHost: TabHost? = null
@@ -26,6 +25,7 @@ class GameActivity : AppCompatActivity(), GameView {
     private var mSolitaireView: ListView? = null
     private var mJunkView: ListView? = null
     private var mUIPlayer: UIPlayer? = null
+    private var mGameState: GameState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +53,49 @@ class GameActivity : AppCompatActivity(), GameView {
     }
 
     override fun redraw(gameState: GameState) {
+        mGameState = gameState
         gameState.printState()
         updateGameInfoView(gameState.getCntLife(), gameState.getCntHints())
         updateHandsView(gameState.playersHands)
         updateSolitaire(gameState.solitaire)
         updateJunk(gameState.junk)
+
+        val state = gameState.getState()
+        when (state) {
+            GameState.State.LOOSE -> {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("End game")
+                builder.setMessage("You loose")
+                builder.setPositiveButton("OK") { _, _ ->
+                    val intent = Intent(this, SinglePlayerActivity::class.java)
+                    this.startActivity(intent)
+                }
+
+                builder.setCancelable(true)
+                builder.setOnCancelListener {
+                    val intent = Intent(this, SinglePlayerActivity::class.java)
+                    this.startActivity(intent)
+                }
+                builder.create().show()
+            }
+            GameState.State.WIN -> {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("You win")
+                builder.setMessage("Your score is ${gameState.getScore()}")
+                builder.setPositiveButton("OK") { _, _ ->
+                    val intent = Intent(this, SinglePlayerActivity::class.java)
+                    this.startActivity(intent)
+                }
+                builder.setCancelable(true)
+                builder.setOnCancelListener {
+                    val intent = Intent(this, SinglePlayerActivity::class.java)
+                    this.startActivity(intent)
+                }
+                builder.create().show()
+            }
+            else -> {
+            }
+        }
     }
 
     private fun updateSolitaire(solitaire: Solitaire) {
@@ -98,14 +136,13 @@ class GameActivity : AppCompatActivity(), GameView {
     }
 
     private fun setupGameInfoView() {
-        // TODO
         mLifeView = findViewById(R.id.life_view)
         mHintsView = findViewById(R.id.hints_view)
     }
 
     private fun updateGameInfoView(lifeCnt: Int, hintsCnt: Int) {
-        mLifeView!!.setText("$lifeCnt life")
-        mHintsView!!.setText("$hintsCnt hints")
+        mLifeView!!.text = "$lifeCnt life"
+        mHintsView!!.text = "$hintsCnt hints"
     }
 
     private fun updateHandsView(playersHands: List<PlayerHand>) {
@@ -138,7 +175,7 @@ class GameActivity : AppCompatActivity(), GameView {
                 if (position != currentPlayer) {
                     cardTextView.text = card.value.toString()
                     setColorCard(cardTextView, card.color)
-                    setOnClickListnerToFriendCard(cardView, position, card)
+                    setOnClickListenerToFriendCard(cardView, position, card)
                 } else {
                     if (card.ownerKnowsVal) {
                         cardTextView.text = card.value.toString()
@@ -151,7 +188,7 @@ class GameActivity : AppCompatActivity(), GameView {
                         cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardUnknown))
                     }
 
-                    setOnClickListnerToMyCard(cardView, cardPos)
+                    setOnClickListenerToMyCard(cardView, cardPos)
                 }
                 (cardView.layoutParams as ViewGroup.MarginLayoutParams).marginEnd = 30
                 handItem.addView(cardView)
@@ -160,43 +197,39 @@ class GameActivity : AppCompatActivity(), GameView {
             return handItem
         }
 
-        fun setOnClickListnerToFriendCard(cardView: View, playerId: Int, card: Card) {
-            cardView.setOnClickListener {
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("Move")
-                builder.setMessage("Choose move")
-                builder.setPositiveButton("hint color", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
+        fun setOnClickListenerToFriendCard(cardView: View, playerId: Int, card: Card) {
+            if (mGameState!!.currentPlayer == 0 && mGameState!!.getCntHints() > 0) {
+                cardView.setOnClickListener {
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("Move")
+                    builder.setMessage("Choose move")
+                    builder.setPositiveButton("hint color") { _, _ ->
                         mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.color))
                     }
-                })
-                builder.setNegativeButton("hint value", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                    builder.setNegativeButton("hint value") { _, _ ->
                         mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.value))
                     }
-                })
-                builder.setCancelable(true)
-                builder.create().show()
+                    builder.setCancelable(true)
+                    builder.create().show()
+                }
             }
         }
 
-        fun setOnClickListnerToMyCard(cardView: View, cardPos: Int) {
-            cardView.setOnClickListener {
-                val builder = AlertDialog.Builder(context)
-                builder.setTitle("Move")
-                builder.setMessage("Choose move")
-                builder.setPositiveButton("fold", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
+        fun setOnClickListenerToMyCard(cardView: View, cardPos: Int) {
+            if (mGameState!!.currentPlayer == 0) {
+                cardView.setOnClickListener {
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("Move")
+                    builder.setMessage("Choose move")
+                    builder.setPositiveButton("fold") { _, _ ->
                         mUIPlayer!!.notifyMyMove(FoldMove(cardPos))
                     }
-                })
-                builder.setNegativeButton("solitaire", object : DialogInterface.OnClickListener {
-                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                    builder.setNegativeButton("solitaire") { _, _ ->
                         mUIPlayer!!.notifyMyMove(SolitaireMove(cardPos))
                     }
-                })
-                builder.setCancelable(true)
-                builder.create().show()
+                    builder.setCancelable(true)
+                    builder.create().show()
+                }
             }
         }
 
