@@ -42,7 +42,7 @@ class GameActivity : AppCompatActivity(), GameView {
         val players: MutableList<Player> = mutableListOf(mUIPlayer!!)
         val playersCnt = intent.getIntExtra("PLAYERS_NUMBER", 2)
         for (i in 2..playersCnt) {
-            players.add(StupidAIPlayer())
+            players.add(NotSoStupidAIPlayer())
         }
 
         val gameThread = Thread(Runnable({
@@ -205,11 +205,11 @@ class GameActivity : AppCompatActivity(), GameView {
                     builder.setMessage("Choose move")
                     builder.setPositiveButton("hint color") { _, _ ->
                         System.err.println("Hint color ${card.color}")
-                        mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.color))
+                        mUIPlayer!!.notifyMyMove(ColorHintMove(mGameState!!.currentPlayer, playerId, card.color))
                     }
                     builder.setNegativeButton("hint value") { _, _ ->
                         System.err.println("Hint value ${card.value}")
-                        mUIPlayer!!.notifyMyMove(ValueHintMove(playerId, card.value))
+                        mUIPlayer!!.notifyMyMove(ValueHintMove(mGameState!!.currentPlayer, playerId, card.value))
                     }
                     builder.setCancelable(true)
                     builder.create().show()
@@ -224,10 +224,10 @@ class GameActivity : AppCompatActivity(), GameView {
                     builder.setTitle("Move")
                     builder.setMessage("Choose move")
                     builder.setPositiveButton("fold") { _, _ ->
-                        mUIPlayer!!.notifyMyMove(FoldMove(cardPos))
+                        mUIPlayer!!.notifyMyMove(FoldMove(mGameState!!.currentPlayer, cardPos))
                     }
                     builder.setNegativeButton("solitaire") { _, _ ->
-                        mUIPlayer!!.notifyMyMove(SolitaireMove(cardPos))
+                        mUIPlayer!!.notifyMyMove(SolitaireMove(mGameState!!.currentPlayer, cardPos))
                     }
                     builder.setCancelable(true)
                     builder.create().show()

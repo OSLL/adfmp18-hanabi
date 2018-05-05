@@ -13,7 +13,7 @@ class GameState(val playersCnt: Int) {
 
     private var state: State = State.IN_PROGRESS
     private val deck: MutableList<Card> = generateRandomDeck()
-    private val movesHistory: MutableList<Move> = ArrayList()
+    val movesHistory: MutableList<Move> = ArrayList()
     val junk: MutableList<Card> = ArrayList()
     val solitaire: Solitaire = Solitaire()
     val playersHands: List<PlayerHand> = dealCards(deck, playersCnt)

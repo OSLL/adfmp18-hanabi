@@ -1,19 +1,19 @@
 package ru.mit.spbau.hanabi.game
 
-abstract class Move {
+abstract class Move(val fromPlayerId: Int) {
 }
 
-abstract class HintMove(val playerId: Int) : Move() {
+abstract class HintMove(fromPlayerId: Int, val playerId: Int) : Move(fromPlayerId) {
 }
 
-class ColorHintMove(playerId: Int, val color: Int) : HintMove(playerId) {
+class ColorHintMove(fromPlayerId: Int, playerId: Int, val color: Int) : HintMove(fromPlayerId, playerId) {
 }
 
-class ValueHintMove(playerId: Int, val value: Int) : HintMove(playerId) {
+class ValueHintMove(fromPlayerId: Int, playerId: Int, val value: Int) : HintMove(fromPlayerId, playerId) {
 }
 
-class SolitaireMove(val cardId: Int) : Move() {
+class SolitaireMove(fromPlayerId: Int, val cardId: Int) : Move(fromPlayerId) {
 }
 
-class FoldMove(val cardId: Int) : Move() {
+class FoldMove(fromPlayerId: Int, val cardId: Int) : Move(fromPlayerId) {
 }
