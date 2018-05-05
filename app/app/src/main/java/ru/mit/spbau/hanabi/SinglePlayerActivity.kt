@@ -28,6 +28,7 @@ class SinglePlayerActivity : AppCompatActivity() {
         val startButton = findViewById<Button>(R.id.start_button)
         startButton?.setOnClickListener { _ ->
             val intent = Intent(this, GameActivity::class.java)
+            intent.putExtra("PLAYERS_NUMBER", mPicker!!.value)
             this.startActivity(intent)
         }
     }

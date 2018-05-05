@@ -40,7 +40,7 @@ class GameActivity : AppCompatActivity(), GameView {
     private fun setupGame() {
         mUIPlayer = UIPlayer(this)
         val players: MutableList<Player> = mutableListOf(mUIPlayer!!)
-        val playersCnt = 3
+        val playersCnt = intent.getIntExtra("PLAYERS_NUMBER", 2)
         for (i in 2..playersCnt) {
             players.add(StupidAIPlayer())
         }
@@ -204,10 +204,12 @@ class GameActivity : AppCompatActivity(), GameView {
                     builder.setTitle("Move")
                     builder.setMessage("Choose move")
                     builder.setPositiveButton("hint color") { _, _ ->
+                        System.err.println("Hint color ${card.color}")
                         mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.color))
                     }
                     builder.setNegativeButton("hint value") { _, _ ->
-                        mUIPlayer!!.notifyMyMove(ColorHintMove(playerId, card.value))
+                        System.err.println("Hint value ${card.value}")
+                        mUIPlayer!!.notifyMyMove(ValueHintMove(playerId, card.value))
                     }
                     builder.setCancelable(true)
                     builder.create().show()
