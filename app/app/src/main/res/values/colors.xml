@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="lightRed">#faafa3</color>
     <color name="lightGreen">#9cec9c</color>
+
     <color name="cardCoverColour">#3D2362</color>
     <color name="cardWhite">#ffffff</color>
     <color name="cardYellow">#E7EC2E</color>
@@ -12,4 +13,9 @@
     <color name="cardGreen">#00B458</color>
     <color name="cardRed">#CC0017</color>
     <color name="cardUnknown">#000000</color>
+
+    <color name="hint">#11ccff</color>
+    <color name="noHint">#666666</color>
+    <color name="life">#00DD00</color>
+    <color name="noLife">#DD0000</color>
 </resources>

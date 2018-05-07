@@ -1,6 +1,7 @@
 package ru.mit.spbau.hanabi
 
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -20,21 +21,34 @@ class GameActivity : AppCompatActivity(), GameView {
     private var tabHost: TabHost? = null
     private var mCurTab = 0
     private var mHandsView: ListView? = null
-    private var mLifeView: TextView? = null
-    private var mHintsView: TextView? = null
+    private var mLifeView: LinearLayout? = null
+    private var mHintsView: LinearLayout? = null
     private var mSolitaireView: ListView? = null
     private var mJunkView: ListView? = null
     private var mUIPlayer: UIPlayer? = null
     private var mGameState: GameState? = null
 
+    private var lifeShape: Drawable? = null
+    private var noLifeShape: Drawable? = null
+    private var hintShape: Drawable? = null
+    private var noHintShape: Drawable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        setupShapes()
         setupTabs()
         setupGameInfoView()
         setupHandsView()
 
         setupGame()
+    }
+
+    private fun setupShapes() {
+        lifeShape = resources.getDrawable(R.drawable.info_panel_circle_life, theme)
+        noLifeShape = resources.getDrawable(R.drawable.info_panel_circle_nolife, theme)
+        hintShape = resources.getDrawable(R.drawable.info_panel_circle_hint, theme)
+        noHintShape = resources.getDrawable(R.drawable.info_panel_circle_nohint, theme)
     }
 
     private fun setupGame() {
@@ -182,8 +196,31 @@ class GameActivity : AppCompatActivity(), GameView {
     }
 
     private fun updateGameInfoView(lifeCnt: Int, hintsCnt: Int) {
-        mLifeView!!.text = "$lifeCnt life"
-        mHintsView!!.text = "$hintsCnt hints"
+        fun createViewWithShape(shape: Drawable): View {
+            val view = View(this)
+            view.background = shape
+            val scale = resources.displayMetrics.density
+            val width = (20 * scale + 0.5f).toInt()
+            val height = (20 * scale + 0.5f).toInt()
+            view.layoutParams = ViewGroup.LayoutParams(width, height)
+            return view
+        }
+
+        mLifeView?.removeAllViews()
+        for (i in 1..lifeCnt) {
+            mLifeView?.addView(createViewWithShape(lifeShape!!))
+        }
+        for (i in 1..(3 - lifeCnt)) {
+            mLifeView?.addView(createViewWithShape(noLifeShape!!))
+        }
+
+        mHintsView?.removeAllViews()
+        for (i in 1..hintsCnt) {
+            mHintsView?.addView(createViewWithShape(hintShape!!))
+        }
+        for (i in 1..(8 - hintsCnt)) {
+            mHintsView?.addView(createViewWithShape(noHintShape!!))
+        }
     }
 
     private fun updateHandsView(playersHands: List<PlayerHand>) {
