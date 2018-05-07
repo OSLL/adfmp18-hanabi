@@ -37,11 +37,20 @@ class GameActivity : AppCompatActivity(), GameView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         setupShapes()
+        setupRulesAction()
         setupTabs()
         setupGameInfoView()
         setupHandsView()
 
         setupGame()
+    }
+
+    private fun setupRulesAction() {
+        val rulesAction = findViewById<ImageView>(R.id.rules_action_view)
+        rulesAction?.setOnClickListener {
+            val intent = Intent(this, RulesActivity::class.java)
+            this.startActivity(intent)
+        }
     }
 
     private fun setupShapes() {
