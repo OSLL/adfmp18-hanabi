@@ -63,39 +63,75 @@ class GameActivity : AppCompatActivity(), GameView {
         val state = gameState.getState()
         when (state) {
             GameState.State.LOOSE -> {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("End game")
-                builder.setMessage("You loose")
-                builder.setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(this, SinglePlayerActivity::class.java)
-                    this.startActivity(intent)
-                }
-
-                builder.setCancelable(true)
-                builder.setOnCancelListener {
-                    val intent = Intent(this, SinglePlayerActivity::class.java)
-                    this.startActivity(intent)
-                }
-                builder.create().show()
+                looseGame()
             }
             GameState.State.WIN -> {
-                val builder = AlertDialog.Builder(this)
-                builder.setTitle("You win")
-                builder.setMessage("Your score is ${gameState.getScore()}")
-                builder.setPositiveButton("OK") { _, _ ->
-                    val intent = Intent(this, SinglePlayerActivity::class.java)
-                    this.startActivity(intent)
-                }
-                builder.setCancelable(true)
-                builder.setOnCancelListener {
-                    val intent = Intent(this, SinglePlayerActivity::class.java)
-                    this.startActivity(intent)
-                }
-                builder.create().show()
+                winGame()
             }
             else -> {
+                showLastMoveInfo()
             }
         }
+    }
+
+    private fun looseGame() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("End game")
+        builder.setMessage("You loose")
+        builder.setPositiveButton("OK") { _, _ ->
+            val intent = Intent(this, SinglePlayerActivity::class.java)
+            this.startActivity(intent)
+        }
+
+        builder.setCancelable(true)
+        builder.setOnCancelListener {
+            val intent = Intent(this, SinglePlayerActivity::class.java)
+            this.startActivity(intent)
+        }
+        builder.create().show()
+    }
+
+    private fun winGame() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("You win")
+        builder.setMessage("Your score is ${mGameState!!.getScore()}")
+        builder.setPositiveButton("OK") { _, _ ->
+            val intent = Intent(this, SinglePlayerActivity::class.java)
+            this.startActivity(intent)
+        }
+        builder.setCancelable(true)
+        builder.setOnCancelListener {
+            val intent = Intent(this, SinglePlayerActivity::class.java)
+            this.startActivity(intent)
+        }
+        builder.create().show()
+    }
+
+    private fun showLastMoveInfo() {
+        if (mGameState!!.movesHistory.isEmpty()) {
+            return
+        }
+        val lastMove = mGameState!!.movesHistory.last()
+        if (lastMove.fromPlayerId == 0) {
+            return
+        }
+        val text = when (lastMove) {
+            is ColorHintMove -> {
+                "Player ${lastMove.fromPlayerId} hint color ${lastMove.color} to player ${lastMove.playerId}"
+            }
+            is ValueHintMove -> {
+                "Player ${lastMove.fromPlayerId} hint color ${lastMove.value} to player ${lastMove.playerId}"
+            }
+            is SolitaireMove -> {
+                "Player ${lastMove.fromPlayerId} added card ${lastMove.cardId} to solitaire"
+            }
+            is FoldMove -> {
+                "Player ${lastMove.fromPlayerId} fold card ${lastMove.cardId}"
+            }
+            else -> throw GameException("Incorrect move")
+        }
+        val toast = Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT)
+        toast.show()
     }
 
     private fun updateSolitaire(solitaire: Solitaire) {
@@ -236,14 +272,15 @@ class GameActivity : AppCompatActivity(), GameView {
         }
 
         fun setColorCard(cardTextView: TextView, color: Int) {
-            when (color) {
-                1 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardWhite))
-                2 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardYellow))
-                3 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardBlue))
-                4 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardGreen))
-                5 -> cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, R.color.cardRed))
+            val colorId = when (color) {
+                1 -> R.color.cardWhite
+                2 -> R.color.cardYellow
+                3 -> R.color.cardBlue
+                4 -> R.color.cardGreen
+                5 -> R.color.cardRed
                 else -> throw GameException("Draw unknown card")
             }
+            cardTextView.setTextColor(ContextCompat.getColor(this@GameActivity, colorId))
         }
 
     }

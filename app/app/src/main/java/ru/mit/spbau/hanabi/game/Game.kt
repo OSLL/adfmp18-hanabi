@@ -7,7 +7,6 @@ interface GameView {
 class Game(private val players: List<Player>) {
     fun run() {
         val gameState = GameState(players.size)
-//        gameState.printState()
         for (player in players) {
             player.sendMoveNotification(gameState)
         }
@@ -18,8 +17,6 @@ class Game(private val players: List<Player>) {
             for (player in players) {
                 player.sendMoveNotification(gameState)
             }
-
-//            gameState.printState()
         }
         for (player in players) {
             player.gameEnd(gameState)
