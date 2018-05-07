@@ -1,5 +1,6 @@
 package ru.mit.spbau.hanabi
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -8,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import ru.mit.spbau.hanabi.game.*
-import android.content.Intent
 
 
 class GameActivity : AppCompatActivity(), GameView {
@@ -120,7 +120,7 @@ class GameActivity : AppCompatActivity(), GameView {
                 "Player ${lastMove.fromPlayerId} hint color ${lastMove.color} to player ${lastMove.playerId}"
             }
             is ValueHintMove -> {
-                "Player ${lastMove.fromPlayerId} hint color ${lastMove.value} to player ${lastMove.playerId}"
+                "Player ${lastMove.fromPlayerId} hint value ${lastMove.value} to player ${lastMove.playerId}"
             }
             is SolitaireMove -> {
                 "Player ${lastMove.fromPlayerId} added card ${lastMove.cardId} to solitaire"
