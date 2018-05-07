@@ -55,7 +55,7 @@ class PlayerHand {
     fun getCartFromDeck(deck: MutableList<Card>) {
         if (!deck.isEmpty()) {
             cards.add(deck.last())
-            deck.remove(deck.last())
+            deck.removeAt(deck.size - 1)
         }
     }
 }

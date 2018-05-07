@@ -8,7 +8,7 @@ const val MAX_CNT_LIFE = 3
 const val ALLOW_EMPTY_SET_HINTS = false
 val NUMBER_OF_CARDS_WITH_VALUE = intArrayOf(0, 3, 2, 2, 2, 1)
 
-class GameState(val playersCnt: Int) {
+data class GameState(val playersCnt: Int) {
     enum class State { IN_PROGRESS, LOOSE, WIN }
 
     private var state: State = State.IN_PROGRESS
