@@ -146,7 +146,12 @@ class GameActivity : AppCompatActivity(), GameView {
     }
 
     private fun updateJunk(junk: List<Card>) {
-
+        val hand = PlayerHand()
+        for (card in junk) {
+            hand.cards.add(card)
+        }
+        val hands: List<PlayerHand> = listOf(hand)
+        mJunkView?.adapter = HandsListAdapter(hands, -1)
     }
 
     private fun setupTabs() {
