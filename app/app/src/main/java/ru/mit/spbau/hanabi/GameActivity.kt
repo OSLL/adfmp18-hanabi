@@ -262,7 +262,9 @@ class GameActivity : AppCompatActivity(), GameView {
                 if (position != currentPlayer) {
                     cardTextView.text = card.value.toString()
                     setColorCard(cardTextView, card.color)
-                    setOnClickListenerToFriendCard(cardView, position, card)
+                    if (currentPlayer != -1) {
+                        setOnClickListenerToFriendCard(cardView, position, card)
+                    }
                 } else {
                     if (card.ownerKnowsVal) {
                         cardTextView.text = card.value.toString()
