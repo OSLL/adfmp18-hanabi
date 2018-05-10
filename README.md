@@ -33,6 +33,8 @@ Fourthly, PDF for rules is bad, we should make it as a text with pictures.
 ## Battery waste
 
 ```
+==== just sitting in main menu
+
 05-11 00:17:27.315 3860-3860/ru.mit.spbau.hanabi D/Battery level: Battery Level in % is:: 27%, rawlevel is:: 27
 05-11 00:28:34.920 3860-3860/ru.mit.spbau.hanabi D/Battery level: Battery Level in % is:: 24%, rawlevel is:: 24
 
