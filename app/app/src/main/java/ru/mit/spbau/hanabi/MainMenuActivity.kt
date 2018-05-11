@@ -7,6 +7,16 @@ import android.widget.Button
 
 class MainMenuActivity : AppCompatActivity() {
 
+    override fun onResume() {
+        super.onResume()
+        BatteryReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BatteryReceiver.unregister(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
@@ -34,6 +44,8 @@ class MainMenuActivity : AppCompatActivity() {
             val intent = Intent(this, SettingsActivity::class.java)
             this.startActivity(intent)
         }
+
+        BatteryReceiver.register(this)
 
     }
 

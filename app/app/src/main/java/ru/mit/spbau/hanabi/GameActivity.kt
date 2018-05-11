@@ -45,6 +45,16 @@ class GameActivity : AppCompatActivity(), GameView {
         setupGame()
     }
 
+    override fun onResume() {
+        super.onResume()
+        BatteryReceiver.register(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        BatteryReceiver.unregister(this)
+    }
+
     private fun setupRulesAction() {
         val rulesAction = findViewById<ImageView>(R.id.rules_action_view)
         rulesAction?.setOnClickListener {
